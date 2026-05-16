@@ -46,6 +46,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import me.rerere.rikkahub.utils.detectLayoutDirection
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
@@ -546,54 +549,60 @@ private fun MessageTextPart(
     onCitationClick: (String) -> Unit,
 ) {
     if (role == MessageRole.USER) {
-        Card(
-            modifier = Modifier.animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = 0.7f,
-                    stiffness = 300f
-                )
-            ),
-            shape = me.rerere.rikkahub.ui.theme.AppShapes.CardLarge,
-        ) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                SelectionContainer {
-                    MarkdownBlock(
-                        content = part.text.replaceRegexes(
-                            assistant = assistant,
-                            scope = AssistantAffectScope.USER,
-                            visual = true,
-                        ),
-                        onClickCitation = onCitationClick,
+        val layoutDir = part.text.detectLayoutDirection()
+        CompositionLocalProvider(LocalLayoutDirection provides layoutDir) {
+            Card(
+                modifier = Modifier.animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = 0.7f,
+                        stiffness = 300f
                     )
-                }
-                if (textIndex == 0) {
-                    MarkdownFontDebugInfo(role = role)
+                ),
+                shape = me.rerere.rikkahub.ui.theme.AppShapes.CardLarge,
+            ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    SelectionContainer {
+                        MarkdownBlock(
+                            content = part.text.replaceRegexes(
+                                assistant = assistant,
+                                scope = AssistantAffectScope.USER,
+                                visual = true,
+                            ),
+                            onClickCitation = onCitationClick,
+                        )
+                    }
+                    if (textIndex == 0) {
+                        MarkdownFontDebugInfo(role = role)
+                    }
                 }
             }
         }
         return
     }
 
-    Column {
-        SelectionContainer(
-            modifier = Modifier.animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = 0.7f,
-                    stiffness = 300f
+    val layoutDir = part.text.detectLayoutDirection()
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDir) {
+        Column {
+            SelectionContainer(
+                modifier = Modifier.animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = 0.7f,
+                        stiffness = 300f
+                    )
                 )
-            )
-        ) {
-            MarkdownBlock(
-                content = part.text.replaceRegexes(
-                    assistant = assistant,
-                    scope = AssistantAffectScope.ASSISTANT,
-                    visual = true,
-                ),
-                onClickCitation = onCitationClick,
-            )
-        }
-        if (textIndex == 0) {
-            MarkdownFontDebugInfo(role = role)
+            ) {
+                MarkdownBlock(
+                    content = part.text.replaceRegexes(
+                        assistant = assistant,
+                        scope = AssistantAffectScope.ASSISTANT,
+                        visual = true,
+                    ),
+                    onClickCitation = onCitationClick,
+                )
+            }
+            if (textIndex == 0) {
+                MarkdownFontDebugInfo(role = role)
+            }
         }
     }
 }

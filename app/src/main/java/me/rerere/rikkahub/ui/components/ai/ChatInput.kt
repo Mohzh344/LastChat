@@ -94,6 +94,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import me.rerere.rikkahub.utils.detectLayoutDirection
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
@@ -946,7 +949,10 @@ private fun TextInputRow(
                     },
                 shape = RoundedCornerShape(20.dp),
                 placeholder = {
-                    Text(stringResource(R.string.chat_input_placeholder))
+                    val placeholderDir = state.textContent.text.toString().detectLayoutDirection()
+                    CompositionLocalProvider(LocalLayoutDirection provides placeholderDir) {
+                        Text(stringResource(R.string.chat_input_placeholder))
+                    }
                 },
                 lineLimits = TextFieldLineLimits.MultiLine(maxHeightInLines = 5),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 16.dp), // Increased padding for centering
