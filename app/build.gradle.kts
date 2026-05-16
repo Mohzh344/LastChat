@@ -367,9 +367,7 @@ dependencies {
     implementation(libs.compose.colorpicker)
 
     // WebDav
-    implementation(libs.dav4jvm) {
-        exclude(group = "org.ogce", module = "xpp3")
-    }
+    // dav4jvm included as local jar in app/libs
 
     // Apache Commons Text
     implementation(libs.commons.text)
