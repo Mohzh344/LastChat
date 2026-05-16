@@ -51,3 +51,6 @@ include(":tts")
 include(":common")
 include(":app:baselineprofile")
 include(":document")
+
+include(":dav4jvm")
+project(":dav4jvm").projectDir = file("dav4jvm")

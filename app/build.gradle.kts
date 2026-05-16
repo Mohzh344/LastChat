@@ -367,7 +367,7 @@ dependencies {
     implementation(libs.compose.colorpicker)
 
     // WebDav
-    // dav4jvm included as local jar in app/libs
+    implementation(project(":dav4jvm"))
 
     // Apache Commons Text
     implementation(libs.commons.text)
